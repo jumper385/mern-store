@@ -38,6 +38,23 @@ router.post('/', (req,res,next) => {
         .then(message => res.json(message))
 })
 
+router.get('/search/:id',(req,res,next) => {
+    const id = req.params.id
+    Product.findOne({_id:id})
+        .then(product => {
+            const didExist = product ? true : false
+            const showProduct = didExist => didExist ? (
+                res.json({product: product})
+            ) : (
+                res.json({error: `Product with id '${id}' does not exist`})
+            )
+            showProduct(didExist)
+        })
+        .catch(error => {
+            res.json({error:error})
+        })
+})
+
 router.patch('/search/:id', (req,res,next) => {
     const id = req.params.id
     Product.findOne({_id:id})

@@ -74,7 +74,6 @@ router.patch('/search/:id', jwtMiddlewear.decode(), (req, res, next) => {
                         $set: req.body,
                         $currentDate: { last_modified: true }
                     })
-                        .exec()
                         .then(message => res.json(message))
                         .catch(error => res.json(error))
                 }

@@ -28,7 +28,7 @@ router.get('/getAll', (req, res, next) => {
 
 router.post('/', jwtMiddlewear.decode(), (req, res, next) => {
     console.log(req.verification)
-    if(req.verification){
+    if(req.verification && req.verification.role === 'admin'){
         const new_product = new Product({
             _id: new mongoose.Types.ObjectId,
             name: req.body.name,

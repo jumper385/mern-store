@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken')
-// const express = require('express')
 
 const decode = () => (req,res,next) => {
     const bearer = req.headers.authorization

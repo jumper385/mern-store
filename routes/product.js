@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose')
 const Product = require('../schemas/product.schema')
-const jwtMiddlewear = require('../middlewear/jwt.middlewear')
+const jwtMiddleware = require('../Middleware/jwt.middleware')
 
-router.get('/', jwtMiddlewear.decode(), function (req, res, next) {
+router.get('/', jwtMiddleware.decode(), function (req, res, next) {
     res.json({ message: 'Welcome to the Products API', token: req.verification})
 });
 
@@ -26,7 +26,7 @@ router.get('/getAll', (req, res, next) => {
         })
 })
 
-router.post('/', jwtMiddlewear.decode(), (req, res, next) => {
+router.post('/', jwtMiddleware.decode(), (req, res, next) => {
     console.log(req.verification)
     if(req.verification && req.verification.role === 'admin'){
         const new_product = new Product({
@@ -60,7 +60,7 @@ router.get('/search/:id', (req, res, next) => {
         })
 })
 
-router.patch('/search/:id', jwtMiddlewear.decode(), (req, res, next) => {
+router.patch('/search/:id', jwtMiddleware.decode(), (req, res, next) => {
     const verified = req.verification.verified
     const role = req.verification.role
     (verified && role==='admin') ? (() => {

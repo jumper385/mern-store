@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
 const { encrypt, decrypt } = require('../utilites/encryption.utils')
+const jwtMiddleware = require('../middleware/jwt.middleware')
 
 const saltRounds = 10
 
@@ -44,11 +45,9 @@ router.post('/signup', (req, res, next) => {
 })
 
 router.post('/login', (req, res, next) => {
-    const username = req.body.username
-    const password = req.body.password
 
     User.findOne({ username: req.body.username })
-        .then(({ first_name, last_name, email, number, username, password, role}) => {
+        .then(({ first_name, last_name, email, number, username, password, role }) => {
 
             const _password = decrypt(password)
 
@@ -56,21 +55,46 @@ router.post('/login', (req, res, next) => {
                 .then(response => {
                     if (response) {
                         jwt.sign({
+                            username: username,
                             first_name: decrypt(first_name),
                             last_name: decrypt(last_name),
                             email: decrypt(email),
                             number: decrypt(number),
                             role: decrypt(role)
-                        }, 'secret', {expiresIn:'2 days'}, (error, token) => {
-                            if(!error) res.json({token:token})
-                            else res.json({error:error.message})
+                        }, 'secret', { expiresIn: '2 days' }, (error, token) => {
+                            if (!error) res.json({ token: token })
+                            else res.json({ error: error.message })
                         })
                     }
                 })
                 .catch(error => {
-                    res.json({error:error.message})
+                    res.json({ error: error.message })
                 })
         })
+})
+
+router.get('/profile', jwtMiddleware.decode(), (req, res, next) => {
+    const token = req.verification ? req.verification : null
+
+    if (token) {
+        User.findOne({ username: token.username })
+            .then(({username, email, number, first_name, last_name, role}) => {
+                res.json({
+                    username: username,
+                    email: decrypt(email),
+                    number: decrypt(number),
+                    first_name: decrypt(first_name),
+                    last_name: decrypt(last_name),
+                    role: decrypt(role)
+                })
+            })
+            .catch(error => {
+                res.json({ error: error.message })
+            })
+    }
+    else {
+        res.json({ error: 'Token not found' })
+    }
 })
 
 module.exports = router

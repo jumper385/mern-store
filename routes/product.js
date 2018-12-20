@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Product = require('../schemas/product.schema')
 const jwtMiddleware = require('../Middleware/jwt.middleware')
 
-router.get('/', jwtMiddleware.decode(), function (req, res, next) {
+router.get('/', function (req, res, next) {
     res.json({ message: 'Welcome to the Products API', token: req.verification})
 });
 

@@ -4,6 +4,8 @@ import { Link, NavLink } from 'react-router-dom'
 const NavBar = () => {
     return (
         <nav className="navbar navbar-dark bg-dark navbar-expand-lg">
+            <div className="container">
+            
             <Link to='/' className="navbar-brand">Vanilla</Link>
             <ul className="navbar-nav ml-auto">
             
@@ -14,6 +16,8 @@ const NavBar = () => {
                 <li className="nav-item"><NavLink to='/login' className="nav-link">Login</NavLink></li>
 
             </ul>
+            
+            </div>
         </nav>
     )
 }
